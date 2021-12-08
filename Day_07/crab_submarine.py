@@ -18,13 +18,15 @@ def calculate_fuel(positions, n:int, burning_rate="constant"):
         X = np.abs(X)
         fuel = np.sum(X)
     elif burning_rate == "linear":
-        X = np.float32(positions)
-        X -=n
-        X = np.abs(X)
-        X *= (X-1) * 0.5  # Formula for: Given a number n, what is the sum of all integers less than n?
-        fuel = np.sum(X)
+        X = np.float64(positions)
+        X -= n
+        X = np.abs(X) + 1
+        X = ((X-1) * (X)) / 2 # Formula for: Given a number n, what is the sum of all integers less than n?
+        fuel = np.sum(X)  
+     
     
     return fuel
+
 
 
 
@@ -50,7 +52,7 @@ if __name__ == "__main__":
         fuel = calculate_fuel(positions, i)
         if fuel > fuel_prev:    grad = "+"
         else:                   grad = "-"
-
+        
         #print(f"Algining at pos {i} requires {fuel:2.0f}. grad: {grad}")
         fuel_prev = fuel
         fuel_history.append(fuel)
@@ -67,10 +69,11 @@ if __name__ == "__main__":
     for i in range(min(positions), max(positions)):
         fuel = calculate_fuel(positions, i, burning_rate="linear")
         fuel_history.append(fuel)
-        #print(f"Algining at pos {i} requires {fuel:2.0f}")
+        if i in [487,488,489,490,491]:
+            print(f"Algining at pos {i} requires {fuel:2.0f}")
 
     argmin = np.argmin(fuel_history)
-    print(f"\n-> Minimum fuel of {fuel_history[argmin]} at position {argmin}!\n")
+    print(f"\n-> Minimum fuel of {fuel_history[argmin]} at position {argmin+min(positions)}!\n")
     
 
 
